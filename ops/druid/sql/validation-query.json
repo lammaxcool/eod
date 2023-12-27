@@ -1,0 +1,7 @@
+{
+  "query": "SELECT * FROM (SELECT ORDER_ID, COUNT(\"COUNT\") AS \"COUNT\", SUM(\"COUNT\") AS \"SUM_COUNT\" FROM orders WHERE __time >= CURRENT_TIMESTAMP - INTERVAL '1' DAY GROUP BY 1 ORDER BY ORDER_ID DESC) WHERE \"COUNT\" > 1 ORDER BY \"ORDER_ID\" DESC",
+  "context": {
+    "useCache": false,
+    "useResultLevelCache": false
+  }
+}

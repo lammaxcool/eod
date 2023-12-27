@@ -1,0 +1,109 @@
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "broker-1:9092,broker-2:9092,broker-3:9092",
+        "isolation.level": "read_committed"
+      },
+      "topic": "ORDERS_ENRICHED",
+      "inputFormat": {
+        "type": "json"
+      },
+      "useEarliestOffset": true,
+      "pollTimeout": 100,
+      "period": "PT30S",
+      "taskCount": 1
+    },
+    "tuningConfig": {
+      "type": "kafka",
+      "maxRowsInMemory": 10000,
+      "maxRowsPerSegment": 50000,
+      "maxTotalRows": 200000
+    },
+    "dataSchema": {
+      "dataSource": "orders_user_reward_sketch",
+      "timestampSpec": {
+        "column": "ORDER_TS",
+        "format": "auto"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "USER_REWARD"
+        ]
+      },
+      "metricsSpec": [
+        {
+          "type": "count",
+          "name": "COUNT"
+        },
+        {
+          "type": "longSum",
+          "name": "QUANTITY",
+          "fieldName": "QUANTITY"
+        },
+        {
+          "type" : "thetaSketch",
+          "name" : "USER_ID_THETA_SKETCH_16",
+          "fieldName" : "USER_ID",
+          "size" : "16"
+        },
+        {
+          "type" : "thetaSketch",
+          "name" : "USER_ID_THETA_SKETCH_32",
+          "fieldName" : "USER_ID",
+          "size" : "32"
+        },
+        {
+          "type" : "thetaSketch",
+          "name" : "USER_ID_THETA_SKETCH_64",
+          "fieldName" : "USER_ID",
+          "size" : "64"
+        },
+        {
+          "type" : "thetaSketch",
+          "name" : "USER_ID_THETA_SKETCH_4096",
+          "fieldName" : "USER_ID",
+          "size" : "4096"
+        },
+        {
+          "type" : "thetaSketch",
+          "name" : "USER_ID_THETA_SKETCH_8192",
+          "fieldName" : "USER_ID",
+          "size" : "8192"
+        },
+        {
+          "type" : "thetaSketch",
+          "name" : "USER_ID_THETA_SKETCH_16384",
+          "fieldName" : "USER_ID",
+          "size" : "16384"
+        },
+        {
+          "type" : "HLLSketchBuild",
+          "name" : "USER_ID_HLL_SKETCH",
+          "fieldName" : "USER_ID",
+          "lgK" : 12,
+          "tgtHllType" : "HLL_4"
+        },
+        {
+          "type" : "HLLSketchBuild",
+          "name" : "USER_ID_HLL_SKETCH_TYPE_8",
+          "fieldName" : "USER_ID",
+          "lgK" : 12,
+          "tgtHllType" : "HLL_8"
+        }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "HOUR",
+        "queryGranularity": "second",
+        "rollup": true,
+        "intervals": null
+      },
+      "transformSpec": {
+        "transforms": []
+      }
+    }
+  }
+}

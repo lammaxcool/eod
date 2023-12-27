@@ -1,0 +1,82 @@
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "broker-1:9092,broker-2:9092,broker-3:9092",
+        "isolation.level": "read_committed"
+      },
+      "topic": "ORDERS_ENRICHED",
+      "inputFormat": {
+        "type": "json"
+      },
+      "useEarliestOffset": true,
+      "pollTimeout": 100,
+      "period": "PT30S",
+      "taskCount": 2
+    },
+    "tuningConfig": {
+      "type": "kafka",
+      "maxRowsInMemory": 10000,
+      "maxRowsPerSegment": 50000,
+      "maxTotalRows": 200000
+    },
+    "dataSchema": {
+      "dataSource": "orders",
+      "timestampSpec": {
+        "column": "_no_such_column_",
+        "format": "auto",
+        "missingValue": "2010-01-01T00:00:00.000Z"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          {
+            "type": "long",
+            "name": "ORDER_ID"
+          },
+          "USER_ID",
+          "USER_REWARD",
+          "USER_AREA_CODE",
+          "STORE_ID",
+          "STORE_ZIPCODE"
+        ],
+        "dimensionExclusions": [
+          "!!!_no_such_column_!!!"
+        ]
+      },
+      "metricsSpec": [
+        {
+          "type": "count",
+          "name": "COUNT"
+        },
+        {
+          "type": "longLast",
+          "name": "QUANTITY",
+          "fieldName": "QUANTITY"
+        },
+	  {
+ 	    "type" : "thetaSketch",
+  	    "name" : "USER_ID_SKETCH",
+ 	    "fieldName" : "USER_ID"
+ 	  }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "HOUR",
+        "queryGranularity": null,
+        "rollup": false,
+        "intervals": null
+      },
+      "transformSpec": {
+        "filter": null,
+        "transforms": [
+          {
+            "type": "expression",
+            "name": "__time",
+            "expression": "(\"ORDER_TS\" / 2000 * 2000) + 500"
+          }
+        ]
+      }    }
+  }
+}
