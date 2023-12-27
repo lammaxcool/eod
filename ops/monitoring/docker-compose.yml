@@ -113,7 +113,7 @@ services:
     ports:
       - "9002:8080"
     environment:
-      bootstrapServers: "broker-1:9092,broker-2:9092,broker-3:9092,broker-4:9092"
+      bootstrapServers: "broker-1:9092,broker-2:9092,broker-3:9092"
 
   akhq:
     image: tchiotludo/akhq:latest
@@ -129,27 +129,4 @@ services:
     ports:
       - "9004:9000"
     environment:
-      KAFKA_BROKERCONNECT: broker-1:9092,broker-2:9092,broker-3:9092,broker-4:9092
-
-#  druid-exporter:
-#    image: druid-exporter:latest
-#    container_name: druid-exporter
-#    command: 
-#      - "conf/example_druid_v_0_17_0.json" -t druid-metric -b broker-1:9092,broker-2:9092,broker-3:9092,broker-4:9092 -g "druid-exporter"
-#    ports:
-#      - "9999:8000"
-
-#  cmak_zk:
-#    image: zookeeper:latest
-#    restart: always
-#    environment:
-#      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
-#  cmak:
-#    image: cmak:latest #hlebalbau/kafka-manager:stable
-#    hostname: cmak
-#    container_name: cmak
-#    restart: always
-#    command:
-#      - "-Dcmak.zkhosts=cmak_zk:2181"
-#    ports:
-#      - "9005:9000"
+      KAFKA_BROKERCONNECT: broker-1:9092,broker-2:9092,broker-3:9092

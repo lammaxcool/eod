@@ -53,7 +53,7 @@ druid_processing_numMergeBuffers=2
 
 # Druid Metrics Emitter - KAFKA
 druid_emitter=kafka
-druid_emitter_kafka_bootstrap_servers=broker-1:9092,broker-2:9092,broker-3:9092,broker-4:9092
+druid_emitter_kafka_bootstrap_servers=broker-1:9092,broker-2:9092,broker-3:9092
 druid_emitter_kafka_metric_topic=druid-metric
 druid_emitter_kafka_alert_topic=druid-alert
 druid_emitter_kafka_producer_config="{\"max.block.ms\":10000}"

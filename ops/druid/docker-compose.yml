@@ -55,14 +55,6 @@ services:
     environment:
       ZOO_MY_ID: 1
       ZOO_4LW_COMMANDS_WHITELIST: "ruok,stat"
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.50'
-#          memory: 50M
-#        reservations:
-#          memory: 20M
-
 
   druid-coordinator:
     image: apache/druid:0.23.0
@@ -90,7 +82,6 @@ services:
       - environment
     environment:
       JAVA_OPTS: -javaagent:/opt/jmx_prometheus/jmx_prometheus_javaagent.jar=7071:/opt/jmx_prometheus/druid-config.yml
-      # -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.rmi.port=9999 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false
 
   druid-broker:
     image: apache/druid:0.23.0
@@ -118,10 +109,6 @@ services:
       - environment
     environment:
       JAVA_OPTS: -javaagent:/opt/jmx_prometheus/jmx_prometheus_javaagent.jar=7071:/opt/jmx_prometheus/druid-config.yml
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 1.25G 
 
   druid-historical:
     image: apache/druid:0.23.0
@@ -155,8 +142,6 @@ services:
     image: apache/druid:0.23.0
     container_name: druid-middlemanager
     hostname: druid-middlemanager
-#    deploy:
-#      replicas: 2
     healthcheck:
       test: wget --spider http://localhost:8091/status/health || exit 1
       interval: 5s
@@ -208,13 +193,3 @@ services:
       - environment
     environment:
       JAVA_OPTS: -javaagent:/opt/jmx_prometheus/jmx_prometheus_javaagent.jar=7071:/opt/jmx_prometheus/druid-config.yml
-
-#  #this is not part of Apache Druid
-#  druid-exporter:
-#    image: quay.io/opstree/druid-exporter:v0.11
-#    container_name: druid-exporter
-#    environment:
-#      DRUID_URL: "http://druid-router:8888"
-#      PORT: "7071"
-#    ports:
-#      - "17073:7071"

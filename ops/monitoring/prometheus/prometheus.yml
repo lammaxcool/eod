@@ -9,7 +9,6 @@ scrape_configs:
         - broker-1:7071
         - broker-2:7071
         - broker-3:7071
-        - broker-4:7071
         labels:
           cluster_type: "kafka"
           cluster_id: "kafka-core"
