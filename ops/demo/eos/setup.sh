@@ -11,7 +11,7 @@ DRUID=$BIN/druid
 KSQL=$BIN/ksql-shell
 
 
-alias kt='kafka-topics --bootstrap-server localhost:19092'
+alias kt='kafka-topics --bootstrap-server localhost:19092,localhost:29092,localhost:39092'
 
 
 $CONNECT available
