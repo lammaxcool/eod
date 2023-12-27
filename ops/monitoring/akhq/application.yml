@@ -2,6 +2,6 @@ akhq:
   connections:
     kafka:
       properties:
-        bootstrap.servers: "broker-1:9092,broker-2:9092,broker-3:9092"
+        bootstrap.servers: "broker-1:9092"
         security.protocol: PLAINTEXT
 
