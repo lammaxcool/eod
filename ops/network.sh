@@ -7,6 +7,6 @@ NETWORK=kafka-local
 #
 if [ "$(docker network inspect -f '{{.Name}}' $NETWORK 2>/dev/null)" != "$NETWORK" ]; then
   echo "creating network $NETWORK"
-  (docker network create $NETWORK >/dev/null)
+  (docker network create -d bridge $NETWORK >/dev/null)
 fi
 
