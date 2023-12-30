@@ -1,0 +1,4 @@
+{
+  "ksql": "SELECT ORDER_ID, COUNT(COUNT) AS COUNT, SUM(COUNT) AS SUM_COUNT\nFROM orders\nWINDOW TUMBLING (SIZE 1 DAY)\nWHERE ROWTIME >= UNIX_TIMESTAMP() - 86400000 -- 1 day in milliseconds\nGROUP BY ORDER_ID\nHAVING COUNT(COUNT) > 1;\n",
+  "streamsProperties": {}
+}

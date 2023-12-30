@@ -4,6 +4,8 @@ cd $(dirname $0)/../..
 
 ./network.sh
 
+(cd cp-kafka-tools; docker compose up -d)
+
 ACTIVE_BROKERS=$(sed -n -E -e "s/^  (broker-[0-9]):/\1 /p" ./kafka/docker-compose.yml | tr -d '\n')
 (cd kafka; docker compose up -d zookeeper ${ACTIVE_BROKERS})
 

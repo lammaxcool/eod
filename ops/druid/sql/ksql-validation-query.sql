@@ -1,8 +1,6 @@
-select *
-from (select ORDER_ID, count("COUNT") "COUNT", sum("COUNT") "SUM_COUNT"
-      from orders
-      where __time >= current_timestamp - interval '1' day
-      group by 1
-      order by ORDER_ID desc)
-where "COUNT" > 1
-order by "ORDER_ID" desc
+SELECT ORDER_ID, COUNT(COUNT) AS COUNT, SUM(COUNT) AS SUM_COUNT
+FROM orders
+    WINDOW TUMBLING (SIZE 1 DAY)
+WHERE ROWTIME >= UNIX_TIMESTAMP() - 86400000 -- 1 day in milliseconds
+GROUP BY ORDER_ID
+HAVING COUNT(COUNT) > 1;

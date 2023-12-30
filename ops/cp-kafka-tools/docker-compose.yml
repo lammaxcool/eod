@@ -1,0 +1,14 @@
+version: '3.7'
+
+networks:
+  default:
+    external: true
+    name: kafka-local
+
+services:
+  cp-kafka-tools:
+    image: local-tools/cp-kafka-tools:latest
+    container_name: cp-kafka-tools
+    volumes:
+      - ./ksql:/ksql
+      - ./config:/config
