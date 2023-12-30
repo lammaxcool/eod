@@ -8,7 +8,7 @@ if ! [ -x "$(command -v jq)" ]; then
     exit
 fi
 
-CONNECT_URL="http://localhost:18083"
+CONNECT_URL="http://localhost:28083"
 
 ACCEPT="Accept:application/json"
 CONTENT_TYPE="Content-Type:application/json"
@@ -102,7 +102,7 @@ fi
 plugin=$(cat ${CONFIG} | jq -r '."connector.class"')
 
 declare -a plugins
-IFS=',' read -r -a plugins <<< "$(curl -k -s -H "${ACCEPT}" -H "${CONTENT_TYPE}" http://localhost:18083/connector-plugins | jq -r '.[].class' | tr '\n' ',')"
+IFS=',' read -r -a plugins <<< "$(curl -k -s -H "${ACCEPT}" -H "${CONTENT_TYPE}" http://localhost:28083/connector-plugins | jq -r '.[].class' | tr '\n' ',')"
 
 if [ ${#plugins[@]} -eq 0 ]; then
   echo ""

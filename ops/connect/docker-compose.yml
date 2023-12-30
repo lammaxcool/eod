@@ -18,7 +18,7 @@ services:
     hostname: connect-1
     container_name: connect-1
     ports:
-      - "18083:8083"
+      - "28083:8083"
       - "17072:7071"
     healthcheck:
       test: curl --fail http://localhost:8083/connector-plugins || exit 1
