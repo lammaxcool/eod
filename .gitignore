@@ -227,6 +227,18 @@ gradle-app.setting
 *.hprof
 
 
+# End of https://www.toptal.com/developers/gitignore/api/intellij+all,java,hyperledgercomposer,maven,gradle
+
 ### CSV files ###
 *.csv
-# End of https://www.toptal.com/developers/gitignore/api/intellij+all,java,hyperledgercomposer,maven,gradle
+
+### Other tmp and generated data ###
+/*/data/*
+/ops/tmp
+/ops/ksqlDB/ext/*
+/connect/jars/*
+
+ops/connect/tmp/*
+ops/druid/storage/*
+ops/druid/staging/*
+ops/cp-kafka-tools/jars/*
