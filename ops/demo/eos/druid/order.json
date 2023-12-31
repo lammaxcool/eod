@@ -55,11 +55,11 @@
           "name": "QUANTITY",
           "fieldName": "QUANTITY"
         },
-	  {
- 	    "type" : "thetaSketch",
-  	    "name" : "USER_ID_SKETCH",
- 	    "fieldName" : "USER_ID"
- 	  }
+        {
+          "type": "thetaSketch",
+          "name": "USER_ID_SKETCH",
+          "fieldName": "USER_ID"
+        }
       ],
       "granularitySpec": {
         "type": "uniform",
@@ -77,6 +77,7 @@
             "expression": "(\"ORDER_TS\" / 2000 * 2000) + 500"
           }
         ]
-      }    }
+      }
+    }
   }
 }

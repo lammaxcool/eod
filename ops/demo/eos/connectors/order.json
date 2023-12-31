@@ -4,7 +4,7 @@
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
-    "max.interval": 2,
+    "max.interval": 100,
     "iterations": 20000,
     "tasks.max": "1",
 
