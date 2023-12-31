@@ -232,13 +232,16 @@ gradle-app.setting
 ### CSV files ###
 *.csv
 
+### secrets ###
+/**/secrets/**
+
 ### Other tmp and generated data ###
-/*/data/*
-/ops/tmp
-/ops/ksqlDB/ext/*
-/connect/jars/*
+/**/data/**
+ops/tmp
+ops/ksqlDB/ext/*
+ops/connect/jars/**
 
 ops/connect/tmp/*
 ops/druid/storage/*
 ops/druid/staging/*
-ops/cp-kafka-tools/jars/*
+ops/cp-kafka-tools/jars/**
