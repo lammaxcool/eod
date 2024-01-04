@@ -1,0 +1,22 @@
+@startuml
+participant Producer
+participant Kafka
+participant "Kafka Consumer" as Consumer
+participant "Blockchain (Ethereum)" as Blockchain
+
+Producer -> Kafka: Sends message\nto Kafka topic
+activate Kafka
+Kafka -> Consumer: Message queued\nin topic
+deactivate Kafka
+
+activate Consumer
+Consumer -> Consumer: Processes message
+Consumer -> Blockchain: Sends transaction\nbased on message
+activate Blockchain
+Blockchain -> Blockchain: Validates &\nexecutes transaction
+Blockchain -> Consumer: Transaction confirmation
+deactivate Blockchain
+
+Consumer -> Consumer: Logs transaction result
+deactivate Consumer
+@enduml
