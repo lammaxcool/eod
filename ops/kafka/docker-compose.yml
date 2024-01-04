@@ -11,7 +11,6 @@ volumes:
   bk1: {}
   bk2: {}
   bk3: {}
-  bk4: {}
 
 services:
 
@@ -61,7 +60,6 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_SECURITY_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      # LB is an optional listener that is fronted by an nginx loadbalancer allowing for testing cluster with artificial network latency.
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,LB:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-1:9092,PLAINTEXT_HOST://localhost:19092,LB://broker-1-lb:9094
       KAFKA_MIN_INSYNC_REPLICAS: 2
@@ -72,7 +70,6 @@ services:
       KAFKA_METRIC_REPORTERS: ' '
       KAFKA_OPTS: -javaagent:/opt/jmx_prometheus/jmx_prometheus_javaagent.jar=7071:/opt/jmx_prometheus/kafka-config.yml -javaagent:/opt/jmx_prometheus/jolokia-agent.jar=port=7072,host=*
       CONFLUENT_METRICS_ENABLE: 'false'
-
 
   broker-2:
     image: confluentinc/cp-kafka:7.1.1
