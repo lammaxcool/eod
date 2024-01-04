@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id "org.web3j" version "4.10.3"
+}
+
+group = 'org.kpi'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.apache.kafka:kafka-clients:3.6.1'
+    implementation 'org.web3j:core:4.10.3'
+}
+
+test {
+    useJUnitPlatform()
+}
