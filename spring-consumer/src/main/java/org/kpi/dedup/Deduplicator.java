@@ -6,6 +6,6 @@ public interface Deduplicator<T> {
 
     boolean isUnique(T key);
 
-    boolean set(T key);
+    void set(T key);
 
 }

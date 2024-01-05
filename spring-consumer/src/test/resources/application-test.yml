@@ -4,10 +4,10 @@ server:
 
 application:
   kafka:
-    topic: ORDERS_ENRICHED
-    bootstrap-servers: localhost:19092,localhost:29092,localhost:39092
-    partitionCount: 4
-    replicaCount: 3
+    topic: testTopic
+    bootstrap-servers: localhost:19092
+    partitionCount: 2
+    replicaCount: 1
 
 spring:
   data:
