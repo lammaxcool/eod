@@ -36,7 +36,7 @@ public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
         this.expireDuration = Duration.ofMillis(properties.expireDurationMillis());
 
         this.partitionsCache = Caffeine.newBuilder()
-                .expireAfterAccess(expireDuration)
+                .expireAfterAccess(expireDuration.multipliedBy(2))
                 .build();
     }
 

@@ -24,3 +24,6 @@ spring:
     consumer:
       auto-offset-reset: earliest
       group-id: "spring-consumer-group"
+
+#logging:
+#  config: "config/log4j2.xml"

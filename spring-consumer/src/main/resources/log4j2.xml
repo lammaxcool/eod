@@ -7,7 +7,7 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
         </Console>
 
-        <RollingRandomAccessFile name="File" fileName="spring-consumer/log/server.log" filePattern="spring-consumer/log/server-%d{yyyy-MM-dd'T'HH-mm-ss}.log">
+        <RollingRandomAccessFile name="File" fileName="build/log/server.log" filePattern="spring-consumer/log/server-%d{yyyy-MM-dd'T'HH-mm-ss}.log">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <OnStartupTriggeringPolicy/>

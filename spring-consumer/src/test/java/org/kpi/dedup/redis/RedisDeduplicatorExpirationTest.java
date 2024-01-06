@@ -48,7 +48,7 @@ class RedisDeduplicatorExpirationTest {
 
         await()
                 .atMost(Duration.ofSeconds(3))
-                .untilAsserted(() -> assertTrue(redisDeduplicator.isUnique(deduplicationKey)));
+                .until(() -> redisDeduplicator.isUnique(deduplicationKey));
 
         status = redisDeduplicator.checkAndSet(deduplicationKey);
         assertTrue(status);
