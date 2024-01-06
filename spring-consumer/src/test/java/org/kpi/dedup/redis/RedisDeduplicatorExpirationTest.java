@@ -24,7 +24,7 @@ import java.time.Duration;
 @ActiveProfiles(profiles = {"test"})
 class RedisDeduplicatorExpirationTest {
 
-    public static final Duration EXPIRE_DURATION_MILLIS = Duration.ofMillis(1000);
+    public static final Duration EXPIRE_DURATION_MILLIS = Duration.ofMillis(300);
 
     @Container
     static RedisContainer REDIS_CONTAINER = new RedisContainer();
