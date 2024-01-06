@@ -48,7 +48,7 @@ class RedisDeduplicatorTest {
 
     @BeforeEach
     void setUp() {
-        redisDeduplicator = new RedisDeduplicator(redisTemplate);
+        redisDeduplicator = new RedisDeduplicator(redisTemplate, new DeduplicatorRedisApplicationProperties(30000));
     }
 
     @AfterEach
@@ -78,12 +78,12 @@ class RedisDeduplicatorTest {
         var deduplicationKey = new DeduplicationKey("key1", String.valueOf(1));
         redisDeduplicator.set(deduplicationKey);
 
-        assertTrue(redisDeduplicator.isUnique(deduplicationKey));
+        assertFalse(redisDeduplicator.isUnique(deduplicationKey));
     }
 
     @Test
     void isUnique_notExists() {
-        assertFalse(redisDeduplicator.isUnique(new DeduplicationKey("key1", String.valueOf(1))));
+        assertTrue(redisDeduplicator.isUnique(new DeduplicationKey("key1", String.valueOf(1))));
     }
 
     @Test
