@@ -8,6 +8,8 @@ application:
     bootstrap-servers: localhost:19092,localhost:29092,localhost:39092
     partitionCount: 4
     replicaCount: 3
+  redis:
+    expire-duration-millis: 300000
 
 spring:
   data:

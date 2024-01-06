@@ -8,4 +8,6 @@ public interface Deduplicator<T> {
 
     void set(T key);
 
+    void expireDuplicatedKeys();
+
 }

@@ -4,14 +4,12 @@ import static java.lang.Boolean.TRUE;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.intellij.lang.annotations.Language;
 import org.kpi.dedup.Deduplicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -21,53 +19,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisDeduplicator.class);
-
-    private static final Duration DEFAULT_EXPIRE_DURATION = Duration.ofMinutes(5);
-
-    @Language("LUA")
-    private static final String SET_IF_NOT_EXISTS_SCRIPT_VALUE = """
-            local set_name = KEYS[1]   -- The name of the sorted set
-            local timestamp = ARGV[1]  -- The timestamp to be used as the score
-            local member = ARGV[2]     -- The member to add to the set
-                        
-            -- Add member to the sorted set wih the timestamp as the score
-            return redis.call('ZADD', set_name, 'NX', timestamp, member)
-            """;
-    private static final RedisScript<Long> SET_IF_NOT_EXISTS_SCRIPT = new DefaultRedisScript<>(SET_IF_NOT_EXISTS_SCRIPT_VALUE, Long.class);
-
-    @Language("LUA")
-    private static final String SET_SCRIPT_VALUE = """
-            local set_name = KEYS[1]   -- The name of the sorted set
-            local timestamp = ARGV[1]  -- The timestamp to be used as the score
-            local member = ARGV[2]     -- The member to add to the set
-                        
-            -- Add member to the sorted set wih the timestamp as the score
-            return redis.call('ZADD', set_name, timestamp, member)
-            """;
-    private static final RedisScript<Long> SET_SCRIPT = new DefaultRedisScript<>(SET_SCRIPT_VALUE, Long.class);
-
-    @Language("LUA")
-    private static final String MEMBER_SCORE_SCRIPT_VALUE = """
-            local set_name = KEYS[1]   -- The name of the sorted set
-            local member = ARGV[1]     -- The member to check
-                        
-            -- Add member to the sorted set wih the timestamp as the score
-            return redis.call('ZSCORE', set_name, member)
-            """;
-    private static final RedisScript<Long> MEMBER_SCORE_SCRIPT = new DefaultRedisScript<>(MEMBER_SCORE_SCRIPT_VALUE, Long.class);
-
-    @Language("LUA")
-    private static final String EXPIRE_MEMBERS_SCRIPT_VALUE = """
-            local set_name = KEYS[1]   -- The name of the sorted set
-            local threshold = ARGV[1]  -- The timestamp to be used as the score
-                        
-            -- Expire members with score less than timestamp
-            return redis.call('ZREMRANGEBYSCORE', set_name, '-inf', threshold)
-            """;
-    private static final RedisScript<Long> EXPIRE_MEMBERS_SCRIPT = new DefaultRedisScript<>(EXPIRE_MEMBERS_SCRIPT_VALUE, Long.class);
 
     private final StringRedisTemplate redisTemplate;
     private final Duration expireDuration;
@@ -86,9 +41,9 @@ public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
 
     @Override
     public boolean checkAndSet(DeduplicationKey key) {
-        partitionsCache.put(key.partition(), TRUE);
-        Long addedMembersAmount = redisTemplate.execute(SET_IF_NOT_EXISTS_SCRIPT, List.of(key.partition()), String.valueOf(expireDuration.toMillis()), key.key());
+        Long addedMembersAmount = redisTemplate.execute(LuaScripts.SET_IF_NOT_EXISTS_SCRIPT, List.of(key.partition()), String.valueOf(expireAfter(expireDuration)), key.key());
         Objects.requireNonNull(addedMembersAmount);
+        putOrAccess(key);
 
         if (addedMembersAmount == 1) {
             LOGGER.info("Successfully added key: {}", key);
@@ -103,14 +58,14 @@ public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
 
     @Override
     public boolean isUnique(DeduplicationKey key) {
-        return Objects.isNull(redisTemplate.execute(MEMBER_SCORE_SCRIPT, List.of(key.partition()), key.key()));
+        return Objects.isNull(redisTemplate.execute(LuaScripts.MEMBER_SCORE_SCRIPT, List.of(key.partition()), key.key()));
     }
 
     @Override
     public void set(DeduplicationKey key) {
-        partitionsCache.put(key.partition(), TRUE);
-        Long addedMembersAmount = redisTemplate.execute(SET_SCRIPT, List.of(key.partition()), String.valueOf(expireDuration.toMillis()), key.key());
+        Long addedMembersAmount = redisTemplate.execute(LuaScripts.SET_SCRIPT, List.of(key.partition()), String.valueOf(expireAfter(expireDuration)), key.key());
         Objects.requireNonNull(addedMembersAmount);
+        putOrAccess(key);
 
         if (addedMembersAmount == 1 || addedMembersAmount == 0) {
             LOGGER.info("Successfully added key: {}", key);
@@ -119,11 +74,22 @@ public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
         }
     }
 
-    @Scheduled(initialDelayString = "${application.redis.expire-duration-millis:30000}", fixedRateString = "${application.redis.expire-duration-millis:30000}")
-    private void expireMembers() {
+    @Override
+    public void expireDuplicatedKeys() {
         List<String> partitions = new ArrayList<>(partitionsCache.asMap().keySet());
-        String currentTimestamp = String.valueOf(clock.instant().toEpochMilli());
-        Long expiredAmount = redisTemplate.execute(SET_SCRIPT, partitions, currentTimestamp);
-        LOGGER.info("Successfully expired {} keys from partitions: {}", expiredAmount, partitions);
+        if (!partitions.isEmpty()) {
+            String currentTimestamp = String.valueOf(clock.millis());
+            Long expiredAmount = redisTemplate.execute(LuaScripts.EXPIRE_MEMBERS_SCRIPT, partitions, currentTimestamp);
+            partitionsCache.invalidateAll();
+            LOGGER.info("Successfully expired {} keys for partitions: {}", expiredAmount, partitions);
+        }
+    }
+
+    private void putOrAccess(DeduplicationKey key) {
+        partitionsCache.get(key.partition(), ignored -> TRUE);
+    }
+
+    private long expireAfter(Duration duration) {
+        return clock.millis() + duration.toMillis();
     }
 }

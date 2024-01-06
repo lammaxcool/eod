@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -27,6 +28,7 @@ import java.util.Objects;
 
 @Testcontainers
 @SpringBootTest
+@DirtiesContext
 @ActiveProfiles(profiles = {"test"})
 @ContextConfiguration(classes = {RedisDeduplicatorTest.LocalTestConfiguration.class})
 class RedisDeduplicatorTest {

@@ -1,0 +1,51 @@
+package org.kpi.dedup.redis;
+
+import org.intellij.lang.annotations.Language;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
+
+public final class LuaScripts {
+
+    @Language("LUA")
+    private static final String SET_IF_NOT_EXISTS_SCRIPT_VALUE = """
+            local set_name = KEYS[1]   -- The name of the sorted set
+            local timestamp = ARGV[1]  -- The timestamp to be used as the score
+            local member = ARGV[2]     -- The member to add to the set
+                        
+            -- Add member to the sorted set wih the timestamp as the score
+            return redis.call('ZADD', set_name, 'NX', timestamp, member)
+            """;
+    static final RedisScript<Long> SET_IF_NOT_EXISTS_SCRIPT = new DefaultRedisScript<>(SET_IF_NOT_EXISTS_SCRIPT_VALUE, Long.class);
+    @Language("LUA")
+    private static final String SET_SCRIPT_VALUE = """
+            local set_name = KEYS[1]   -- The name of the sorted set
+            local timestamp = ARGV[1]  -- The timestamp to be used as the score
+            local member = ARGV[2]     -- The member to add to the set
+                        
+            -- Add member to the sorted set wih the timestamp as the score
+            return redis.call('ZADD', set_name, timestamp, member)
+            """;
+    static final RedisScript<Long> SET_SCRIPT = new DefaultRedisScript<>(SET_SCRIPT_VALUE, Long.class);
+    @Language("LUA")
+    private static final String MEMBER_SCORE_SCRIPT_VALUE = """
+            local set_name = KEYS[1]   -- The name of the sorted set
+            local member = ARGV[1]     -- The member to check
+                        
+            -- Add member to the sorted set wih the timestamp as the score
+            return redis.call('ZSCORE', set_name, member)
+            """;
+    static final RedisScript<Long> MEMBER_SCORE_SCRIPT = new DefaultRedisScript<>(MEMBER_SCORE_SCRIPT_VALUE, Long.class);
+    @Language("LUA")
+    private static final String EXPIRE_MEMBERS_SCRIPT_VALUE = """
+            local set_name = KEYS[1]   -- The name of the sorted set
+            local threshold = ARGV[1]  -- The timestamp to be used as the score
+                        
+            -- Expire members with score less than timestamp
+            return redis.call('ZREMRANGEBYSCORE', set_name, '-inf', threshold)
+            """;
+    static final RedisScript<Long> EXPIRE_MEMBERS_SCRIPT = new DefaultRedisScript<>(EXPIRE_MEMBERS_SCRIPT_VALUE, Long.class);
+
+    private LuaScripts() {
+        throw new UnsupportedOperationException();
+    }
+}
