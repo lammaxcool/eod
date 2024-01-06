@@ -15,28 +15,31 @@ repositories {
     mavenCentral()
 }
 
+configurations.configureEach {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+}
+
 dependencies {
-    implementation 'org.jetbrains:annotations:24.1.0'
-
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
     implementation 'org.springframework.boot:spring-boot-starter-cache'
-
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:kafka'
+
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
-    testImplementation 'org.testcontainers:testcontainers:1.19.3'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+    implementation 'org.jetbrains:annotations:24.1.0'
 }
 
 tasks.named('test') {
