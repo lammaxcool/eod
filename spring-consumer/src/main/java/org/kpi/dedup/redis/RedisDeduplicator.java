@@ -4,6 +4,7 @@ import static java.lang.Boolean.TRUE;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.kpi.dedup.DeduplicationKey;
 import org.kpi.dedup.Deduplicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
