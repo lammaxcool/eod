@@ -1,16 +1,19 @@
 SELECT o.order_id, COUNT(*)
-FROM public.orders o
+FROM eos.orders_eos o
 GROUP BY o.order_id
 HAVING COUNT(*) > 1;
 
-SELECT *
-FROM public.orders o
-ORDER BY o.order_id DESC;
+WITH diff AS (SELECT o.order_timestamp, o.processed_at, EXTRACT(EPOCH FROM (o.processed_at - o.order_timestamp)) AS seconds_difference
+              FROM eos.orders_eos o)
+SELECT MIN(d.seconds_difference), MAX(d.seconds_difference), AVG(d.seconds_difference)
+FROM diff d;
 
-SELECT *
-FROM public.orders o
-WHERE o.order_id = 5224;
+SELECT o.order_id, COUNT(*)
+FROM redis.orders_redis o
+GROUP BY o.order_id
+HAVING COUNT(*) > 1;
 
-SELECT o.order_timestamp, o.processed_at, EXTRACT(EPOCH FROM (o.processed_at - o.order_timestamp)) AS seconds_difference
-FROM public.orders o
-ORDER BY seconds_difference ASC;
+WITH diff AS (SELECT o.order_timestamp, o.processed_at, EXTRACT(EPOCH FROM (o.processed_at - o.order_timestamp)) AS seconds_difference
+              FROM redis.orders_redis o)
+SELECT MIN(d.seconds_difference), MAX(d.seconds_difference), AVG(d.seconds_difference)
+FROM diff d;
