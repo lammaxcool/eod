@@ -18,11 +18,9 @@ public class EosKafkaMessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EosKafkaMessageListener.class);
 
-    private final Deduplicator<DeduplicationKey> deduplicator;
     private final OrdersProcessor ordersProcessor;
 
     public EosKafkaMessageListener(Deduplicator<DeduplicationKey> deduplicator, OrdersProcessor ordersProcessor) {
-        this.deduplicator = deduplicator;
         this.ordersProcessor = ordersProcessor;
     }
 

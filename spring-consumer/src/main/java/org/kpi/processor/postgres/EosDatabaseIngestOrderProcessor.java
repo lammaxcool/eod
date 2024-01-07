@@ -2,24 +2,26 @@ package org.kpi.processor.postgres;
 
 import org.kpi.model.Order;
 import org.kpi.processor.OrdersProcessor;
-import org.kpi.processor.postgres.redis.RedisOrderPo;
-import org.kpi.processor.postgres.redis.RedisOrdersRepository;
+import org.kpi.processor.postgres.eos.EosOrderPo;
+import org.kpi.processor.postgres.eos.EosOrdersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.ZoneId;
 
 @Component
-public class DatabaseIngestOrderProcessor implements OrdersProcessor {
+@Profile(value = {"eos"})
+public class EosDatabaseIngestOrderProcessor implements OrdersProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseIngestOrderProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EosDatabaseIngestOrderProcessor.class);
 
-    private final RedisOrdersRepository redisOrdersRepository;
+    private final EosOrdersRepository eosOrdersRepository;
 
-    public DatabaseIngestOrderProcessor(RedisOrdersRepository redisOrdersRepository) {
-        this.redisOrdersRepository = redisOrdersRepository;
+    public EosDatabaseIngestOrderProcessor(EosOrdersRepository eosOrdersRepository) {
+        this.eosOrdersRepository = eosOrdersRepository;
     }
 
     @Override
@@ -30,11 +32,11 @@ public class DatabaseIngestOrderProcessor implements OrdersProcessor {
     }
 
     private void saveOrder(Order order) {
-        var orderPo = new RedisOrderPo()
+        var orderPo = new EosOrderPo()
                 .setOrderId(order.orderId())
                 .setOrderTimestamp(shiftToSystemInstant(order.timestamp()));
 
-        redisOrdersRepository.save(orderPo);
+        eosOrdersRepository.save(orderPo);
     }
 
     private static Instant shiftToSystemInstant(long timestamp) {
