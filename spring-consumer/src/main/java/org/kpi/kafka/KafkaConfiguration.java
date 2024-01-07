@@ -6,7 +6,6 @@ import org.kpi.model.Order;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
@@ -39,7 +38,6 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    @Profile(value = {"redis", "test"})
     public ConsumerFactory<String, Order> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(),
                 new StringDeserializer(),

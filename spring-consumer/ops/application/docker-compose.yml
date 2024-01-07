@@ -44,7 +44,7 @@ services:
     image: spring-consumer:latest
     environment:
       - JAVA_OPTS=
-        -Dspring.profiles.active=docker
+        -Dspring.profiles.active=redis
         -Dspring.config.location=/opt/local/spring-consumer/config/application-docker-redis.yml
     volumes:
       - ./configs:/opt/local/spring-consumer/config
@@ -58,7 +58,7 @@ services:
     image: spring-consumer:latest
     environment:
       - JAVA_OPTS=
-        -Dspring.profiles.active=docker
+        -Dspring.profiles.active=eos
         -Dspring.config.location=/opt/local/spring-consumer/config/application-docker-eos.yml
     volumes:
       - ./configs:/opt/local/spring-consumer/config
