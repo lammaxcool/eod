@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.ZoneId;
 
 @Component
 public class DatabaseIngestOrderProcessor implements OrdersProcessor {
@@ -29,8 +30,12 @@ public class DatabaseIngestOrderProcessor implements OrdersProcessor {
     private void saveOrder(Order order) {
         var orderPo = new OrderPo()
                 .setOrderId(order.orderId())
-                .setOrderTimestamp(Instant.ofEpochMilli(order.timestamp()));
+                .setOrderTimestamp(shiftToSystemInstant(order.timestamp()));
 
         ordersRepository.save(orderPo);
+    }
+
+    private static Instant shiftToSystemInstant(long timestamp) {
+        return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toInstant();
     }
 }
