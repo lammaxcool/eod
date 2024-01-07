@@ -39,13 +39,27 @@ services:
       - REDIS_PASSWORD=mypass
       - REDIS_PORT=6379
 
-  spring-consumer:
+  spring-consumer-redis:
     container_name: spring-consumer
     image: spring-consumer:latest
     environment:
       - JAVA_OPTS=
         -Dspring.profiles.active=docker
-        -Dspring.config.location=/opt/local/spring-consumer/config/application-docker.yml
+        -Dspring.config.location=/opt/local/spring-consumer/config/application-docker-redis.yml
+    volumes:
+      - ./configs:/opt/local/spring-consumer/config
+      - ./log:/opt/local/spring-consumer/log
+    depends_on:
+      - redis
+      - postgres
+
+  spring-consumer-eos:
+    container_name: spring-consumer
+    image: spring-consumer:latest
+    environment:
+      - JAVA_OPTS=
+        -Dspring.profiles.active=docker
+        -Dspring.config.location=/opt/local/spring-consumer/config/application-docker-eos.yml
     volumes:
       - ./configs:/opt/local/spring-consumer/config
       - ./log:/opt/local/spring-consumer/log

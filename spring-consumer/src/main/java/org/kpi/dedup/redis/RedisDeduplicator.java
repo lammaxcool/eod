@@ -9,6 +9,7 @@ import org.kpi.dedup.Deduplicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Profile(value = {"redis", "test"})
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
 

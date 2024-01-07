@@ -1,4 +1,4 @@
-package org.kpi.processor.postgres;
+package org.kpi.processor.postgres.redis;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,9 +15,9 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-@Table(name = "orders", schema = "public")
+@Table(name = "orders_redis", schema = "redis")
 @EntityListeners(AuditingEntityListener.class)
-public class OrderPo {
+public class RedisOrderPo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class OrderPo {
         return id;
     }
 
-    public OrderPo setId(long id) {
+    public RedisOrderPo setId(long id) {
         this.id = id;
         return this;
     }
@@ -49,7 +49,7 @@ public class OrderPo {
         return orderId;
     }
 
-    public OrderPo setOrderId(long orderId) {
+    public RedisOrderPo setOrderId(long orderId) {
         this.orderId = orderId;
         return this;
     }
@@ -58,7 +58,7 @@ public class OrderPo {
         return orderTimestamp;
     }
 
-    public OrderPo setOrderTimestamp(Instant orderTimestamp) {
+    public RedisOrderPo setOrderTimestamp(Instant orderTimestamp) {
         this.orderTimestamp = orderTimestamp;
         return this;
     }
@@ -67,7 +67,7 @@ public class OrderPo {
         return processedAt;
     }
 
-    public OrderPo setProcessedAt(Instant processedAt) {
+    public RedisOrderPo setProcessedAt(Instant processedAt) {
         this.processedAt = processedAt;
         return this;
     }
@@ -80,11 +80,11 @@ public class OrderPo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderPo orderPo = (OrderPo) o;
-        return id == orderPo.id
-                && orderId == orderPo.orderId
-                && Objects.equals(orderTimestamp, orderPo.orderTimestamp)
-                && Objects.equals(processedAt, orderPo.processedAt);
+        RedisOrderPo redisOrderPo = (RedisOrderPo) o;
+        return id == redisOrderPo.id
+                && orderId == redisOrderPo.orderId
+                && Objects.equals(orderTimestamp, redisOrderPo.orderTimestamp)
+                && Objects.equals(processedAt, redisOrderPo.processedAt);
     }
 
     @Override

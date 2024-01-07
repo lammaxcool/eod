@@ -5,8 +5,46 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="2022-12-22" author="m.haponiuk">
-        <createTable tableName="orders">
+    <changeSet id="2024-01-03" author="m.haponiuk">
+            <sql>
+                CREATE SCHEMA IF NOT EXISTS redis;
+            </sql>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="2024-01-04" author="m.haponiuk">
+            <sql>
+                CREATE SCHEMA IF NOT EXISTS eos;
+            </sql>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="2024-01-05" author="m.haponiuk">
+        <createTable tableName="orders_redis" schemaName="redis">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_ORDERS_ID"/>
+            </column>
+
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_timestamp" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="processed_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="2024-01-06" author="m.haponiuk">
+        <createTable tableName="orders_eos" schemaName="eos">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_ORDERS_ID"/>
             </column>

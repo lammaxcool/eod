@@ -2,6 +2,8 @@ package org.kpi.processor.postgres;
 
 import org.kpi.model.Order;
 import org.kpi.processor.OrdersProcessor;
+import org.kpi.processor.postgres.redis.RedisOrderPo;
+import org.kpi.processor.postgres.redis.RedisOrdersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,10 +16,10 @@ public class DatabaseIngestOrderProcessor implements OrdersProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseIngestOrderProcessor.class);
 
-    private final OrdersRepository ordersRepository;
+    private final RedisOrdersRepository redisOrdersRepository;
 
-    public DatabaseIngestOrderProcessor(OrdersRepository ordersRepository) {
-        this.ordersRepository = ordersRepository;
+    public DatabaseIngestOrderProcessor(RedisOrdersRepository redisOrdersRepository) {
+        this.redisOrdersRepository = redisOrdersRepository;
     }
 
     @Override
@@ -28,11 +30,11 @@ public class DatabaseIngestOrderProcessor implements OrdersProcessor {
     }
 
     private void saveOrder(Order order) {
-        var orderPo = new OrderPo()
+        var orderPo = new RedisOrderPo()
                 .setOrderId(order.orderId())
                 .setOrderTimestamp(shiftToSystemInstant(order.timestamp()));
 
-        ordersRepository.save(orderPo);
+        redisOrdersRepository.save(orderPo);
     }
 
     private static Instant shiftToSystemInstant(long timestamp) {

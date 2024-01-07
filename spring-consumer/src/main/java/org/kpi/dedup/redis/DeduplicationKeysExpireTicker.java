@@ -3,10 +3,12 @@ package org.kpi.dedup.redis;
 import org.kpi.dedup.Deduplicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile(value = {"redis", "test"})
 public class DeduplicationKeysExpireTicker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicationKeysExpireTicker.class);

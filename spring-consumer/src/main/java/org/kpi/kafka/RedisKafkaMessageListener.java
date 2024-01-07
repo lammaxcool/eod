@@ -6,20 +6,22 @@ import org.kpi.model.Order;
 import org.kpi.processor.OrdersProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaMessageListener {
+@Profile(value = {"redis", "test"})
+public class RedisKafkaMessageListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaMessageListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisKafkaMessageListener.class);
 
     private final Deduplicator<DeduplicationKey> deduplicator;
     private final OrdersProcessor ordersProcessor;
 
-    public KafkaMessageListener(Deduplicator<DeduplicationKey> deduplicator, OrdersProcessor ordersProcessor) {
+    public RedisKafkaMessageListener(Deduplicator<DeduplicationKey> deduplicator, OrdersProcessor ordersProcessor) {
         this.deduplicator = deduplicator;
         this.ordersProcessor = ordersProcessor;
     }
