@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DIR=$(dirname $0)
-
 CONTAINER_NAME="ksql-server"
 
 TIME_INTERVAL="$1"

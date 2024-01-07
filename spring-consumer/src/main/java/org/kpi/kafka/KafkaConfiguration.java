@@ -1,7 +1,6 @@
 package org.kpi.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.IsolationLevel;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.kpi.model.Order;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
