@@ -9,6 +9,7 @@ public record Order(
         @JsonProperty("CODE") String code,
         @JsonProperty("STORE_ID") String storeId,
         @JsonProperty("USER_ID") String userId,
-        @JsonProperty("QUANTITY") int quantity
+        @JsonProperty("QUANTITY") int quantity,
+        @JsonProperty("ORDER_TS") long timestamp
 ) {
 }

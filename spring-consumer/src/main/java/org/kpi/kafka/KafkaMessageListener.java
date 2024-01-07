@@ -32,6 +32,7 @@ public class KafkaMessageListener {
             try {
                 ordersProcessor.process(message);
             } catch (Exception ex) {
+                LOGGER.error("Error occurred during message processing, message: {}, trying to rollback...", message, ex);
                 // TODO: remove key from deduplicator
             }
         }
