@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 public record KafkaApplicationProperties(
         @NotBlank String topic,
         @NotBlank String bootstrapServers,
+        @NotBlank String isolationLevel,
         @Positive int partitionCount,
         @Positive int replicaCount
 ) {

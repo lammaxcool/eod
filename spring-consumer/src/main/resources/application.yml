@@ -6,6 +6,7 @@ application:
   kafka:
     topic: ORDERS_ENRICHED
     bootstrap-servers: localhost:19092,localhost:29092,localhost:39092
+    isolation-level: read_uncommitted
     partitionCount: 4
     replicaCount: 3
   redis:
