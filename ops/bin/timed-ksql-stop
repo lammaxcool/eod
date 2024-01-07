@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR=$(dirname $0)
+
+CONTAINER_NAME="ksql-server"
+
+TIME_INTERVAL="$1"
+
+echo "sleeping $TIME_INTERVAL seconds to continue processing messages and stop ksql"
+sleep "$TIME_INTERVAL"
+
+# Kill the Docker container
+docker stop $CONTAINER_NAME

@@ -9,6 +9,8 @@ BIN=$DIR/../../bin
 
 CONNECT=$BIN/connect
 DRUID=$BIN/druid
+RESTART_KSQL=$BIN/timed-ksql-restart
+STOP_KSQL=$BIN/timed-ksql-stop
 
 KT="docker exec -t cp-kafka-tools kafka-topics --bootstrap-server broker-1:9092,broker-2:9092,broker-3:9092"
 KSQL="docker exec -t cp-kafka-tools ksql http://ksql-server:8088 --config-file /config/ksql.properties --file "
@@ -57,3 +59,6 @@ echo "ksql orders_enriched.ksql executed"
 
 $DRUID load ./druid/order.json
 echo "druid load order.json executed"
+
+$RESTART_KSQL 30 10
+$STOP_KSQL 50

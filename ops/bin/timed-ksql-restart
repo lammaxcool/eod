@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DIR=$(dirname $0)
+KSQLDB_DIR="${DIR}/../ksqlDB"
+
+CONTAINER_NAME="ksql-server"
+
+TIME_TO_KILL="$1"
+RESTART_INTERVAL="$2"
+
+echo "ksql will be killed after $TIME_TO_KILL seconds"
+sleep "$TIME_TO_KILL"
+
+# Kill the Docker container
+docker kill $CONTAINER_NAME
+
+echo "sleeping $RESTART_INTERVAL seconds to emulate error in ksql"
+sleep "$RESTART_INTERVAL"
+
+# Restart the Docker container
+(cd "$KSQLDB_DIR" || exit; docker compose up -d $CONTAINER_NAME)
