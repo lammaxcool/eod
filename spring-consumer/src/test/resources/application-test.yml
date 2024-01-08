@@ -6,6 +6,8 @@ application:
   kafka:
     topic: testTopic
     bootstrap-servers: localhost:9092
+    isolation-level: read_uncommitted
+    enable-auto-commit: false
     partitionCount: 2
     replicaCount: 1
   redis:

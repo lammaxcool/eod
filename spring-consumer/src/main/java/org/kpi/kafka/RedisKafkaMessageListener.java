@@ -36,6 +36,7 @@ public class RedisKafkaMessageListener {
             } catch (Exception ex) {
                 LOGGER.error("Error occurred during message processing, message: {}, trying to rollback...", message, ex);
                 // TODO: remove key from deduplicator
+                // TODO: send to dead letters
             }
         }
     }

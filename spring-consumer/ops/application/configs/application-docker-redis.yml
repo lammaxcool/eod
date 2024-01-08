@@ -7,6 +7,7 @@ application:
     topic: ORDERS_ENRICHED
     bootstrap-servers: broker-1:9092,broker-2:9092,broker-3:9092
     isolation-level: read_uncommitted
+    enable-auto-commit: false
     partitionCount: 4
     replicaCount: 3
   redis:

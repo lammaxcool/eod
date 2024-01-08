@@ -11,6 +11,7 @@ public record KafkaApplicationProperties(
         @NotBlank String topic,
         @NotBlank String bootstrapServers,
         @NotBlank String isolationLevel,
+        @NotBlank String enableAutoCommit,
         @Positive int partitionCount,
         @Positive int replicaCount
 ) {
