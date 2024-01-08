@@ -8,4 +8,4 @@ echo "sleeping $TIME_INTERVAL seconds to continue processing messages and stop k
 sleep "$TIME_INTERVAL"
 
 # Kill the Docker container
-docker stop $CONTAINER_NAME
+docker kill $CONTAINER_NAME

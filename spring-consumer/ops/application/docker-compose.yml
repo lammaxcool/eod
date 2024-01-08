@@ -67,5 +67,4 @@ services:
       - ./configs:/opt/local/spring-consumer/config
       - ./log:/opt/local/spring-consumer/log
     depends_on:
-      - redis
       - postgres
