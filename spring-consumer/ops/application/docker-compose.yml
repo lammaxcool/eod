@@ -19,12 +19,17 @@ services:
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
+    volumes:
+      - ./pgadmin:/opt/local/pgadmin4
     environment:
+      - PGADMIN_SERVER_JSON_FILE=/opt/local/pgadmin4/servers.json
       - PGADMIN_DEFAULT_EMAIL=postgres@example.com
       - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
       - "5050:80"
     restart: always
+    depends_on:
+      - postgres
 
   redis:
     container_name: redis
@@ -40,7 +45,6 @@ services:
       - REDIS_PORT=6379
 
   spring-consumer-redis:
-    container_name: spring-consumer
     image: spring-consumer:latest
     environment:
       - JAVA_OPTS=
@@ -54,7 +58,6 @@ services:
       - postgres
 
   spring-consumer-eos:
-    container_name: spring-consumer
     image: spring-consumer:latest
     environment:
       - JAVA_OPTS=
