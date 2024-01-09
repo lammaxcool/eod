@@ -25,10 +25,14 @@ public class EosDatabaseIngestOrderProcessor implements OrdersProcessor {
     }
 
     @Override
-    public void process(Order order) {
-        saveOrder(order);
-
-        LOGGER.info("Order with id {} processed", order.orderId());
+    public void process(Order order) throws ProcessingException {
+        try {
+            saveOrder(order);
+            LOGGER.info("Order with id {} processed", order.orderId());
+        } catch (Exception ex) {
+            LOGGER.error("Error occurred during  processing order with id: {}", order.orderId(), ex);
+            throw new ProcessingException(ex);
+        }
     }
 
     private void saveOrder(Order order) {
