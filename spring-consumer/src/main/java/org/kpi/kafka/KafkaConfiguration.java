@@ -52,7 +52,7 @@ public class KafkaConfiguration {
             ConsumerFactory<String, Order> consumerFactory) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, Order>();
         factory.setConsumerFactory(consumerFactory);
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
         return factory;
     }
 }
