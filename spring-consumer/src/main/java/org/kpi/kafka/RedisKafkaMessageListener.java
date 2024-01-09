@@ -7,9 +7,12 @@ import org.kpi.processor.OrdersProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +29,7 @@ public class RedisKafkaMessageListener {
         this.ordersProcessor = ordersProcessor;
     }
 
+    @RetryableTopic(backoff = @Backoff(delay = 1000, multiplier = 1.5))
     @KafkaListener(topics = "${application.kafka.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void listen(Order message, @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
         LOGGER.info("Got new message from partition: {}, message: {}", partition, message);
@@ -37,9 +41,13 @@ public class RedisKafkaMessageListener {
             } catch (Exception ex) {
                 LOGGER.error("Error occurred during message processing, message: {}, trying to rollback...", message, ex);
                 deduplicator.remove(deduplicationKey);
-                // TODO: send to dead letters
             }
         }
+    }
+
+    @DltHandler
+    public void dltHandler(Order message) {
+        LOGGER.error("Got message in DLT: {})", message);
     }
 
     private static DeduplicationKey deduplicationKey(Order message, int partition) {
