@@ -4,6 +4,7 @@ import org.kpi.dedup.DeduplicationKey;
 import org.kpi.dedup.Deduplicator;
 import org.kpi.model.Order;
 import org.kpi.processor.OrdersProcessor;
+import org.kpi.processor.postgres.ProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -41,6 +42,7 @@ public class RedisKafkaMessageListener {
             } catch (Exception ex) {
                 LOGGER.error("Error occurred during message processing, message: {}, trying to rollback...", message, ex);
                 deduplicator.remove(deduplicationKey);
+                throw new ProcessingException(ex);
             }
         }
     }
