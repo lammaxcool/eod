@@ -88,6 +88,13 @@ public class RedisDeduplicator implements Deduplicator<DeduplicationKey> {
         }
     }
 
+    @Override
+    public void remove(DeduplicationKey key) {
+        Long removedMembersAmount = redisTemplate.execute(LuaScripts.REMOVE_MEMBER_SCRIPT, List.of(key.partition()), key.key());
+        Objects.requireNonNull(removedMembersAmount);
+        LOGGER.info("Successfully removed key: {}", key);
+    }
+
     private void putOrAccess(DeduplicationKey key) {
         partitionsCache.get(key.partition(), ignored -> TRUE);
     }

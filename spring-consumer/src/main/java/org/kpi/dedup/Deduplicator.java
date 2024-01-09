@@ -10,4 +10,6 @@ public interface Deduplicator<T> {
 
     void expireDuplicatedKeys();
 
+    void remove(T key);
+
 }

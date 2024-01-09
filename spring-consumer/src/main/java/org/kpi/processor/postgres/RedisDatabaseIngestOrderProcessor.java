@@ -26,9 +26,13 @@ public class RedisDatabaseIngestOrderProcessor implements OrdersProcessor {
 
     @Override
     public void process(Order order) {
-        saveOrder(order);
-
-        LOGGER.info("Order with id {} processed", order.orderId());
+        try {
+            saveOrder(order);
+            LOGGER.info("Order with id {} processed", order.orderId());
+        } catch (Exception ex) {
+            LOGGER.error("Error occurred during processing order with id: {}", order.orderId(), ex);
+            throw new ProcessingException(ex);
+        }
     }
 
     private void saveOrder(Order order) {

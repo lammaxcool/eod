@@ -30,12 +30,13 @@ public class RedisKafkaMessageListener {
     public void listen(Order message, @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) {
         LOGGER.info("Got new message from partition: {}, message: {}", partition, message);
 
-        if (deduplicator.checkAndSet(deduplicationKey(message, partition))) {
+        var deduplicationKey = deduplicationKey(message, partition);
+        if (deduplicator.checkAndSet(deduplicationKey)) {
             try {
                 ordersProcessor.process(message);
             } catch (Exception ex) {
                 LOGGER.error("Error occurred during message processing, message: {}, trying to rollback...", message, ex);
-                // TODO: remove key from deduplicator
+                deduplicator.remove(deduplicationKey);
                 // TODO: send to dead letters
             }
         }

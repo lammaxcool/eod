@@ -16,6 +16,7 @@ public final class LuaScripts {
             return redis.call('ZADD', set_name, 'NX', timestamp, member)
             """;
     static final RedisScript<Long> SET_IF_NOT_EXISTS_SCRIPT = new DefaultRedisScript<>(SET_IF_NOT_EXISTS_SCRIPT_VALUE, Long.class);
+
     @Language("LUA")
     private static final String SET_SCRIPT_VALUE = """
             local set_name = KEYS[1]   -- The name of the sorted set
@@ -26,6 +27,7 @@ public final class LuaScripts {
             return redis.call('ZADD', set_name, timestamp, member)
             """;
     static final RedisScript<Long> SET_SCRIPT = new DefaultRedisScript<>(SET_SCRIPT_VALUE, Long.class);
+
     @Language("LUA")
     private static final String MEMBER_SCORE_SCRIPT_VALUE = """
             local set_name = KEYS[1]   -- The name of the sorted set
@@ -35,6 +37,7 @@ public final class LuaScripts {
             return redis.call('ZSCORE', set_name, member)
             """;
     static final RedisScript<Long> MEMBER_SCORE_SCRIPT = new DefaultRedisScript<>(MEMBER_SCORE_SCRIPT_VALUE, Long.class);
+
     @Language("LUA")
     private static final String EXPIRE_MEMBERS_SCRIPT_VALUE = """
             local set_name = KEYS[1]   -- The name of the sorted set
@@ -44,6 +47,16 @@ public final class LuaScripts {
             return redis.call('ZREMRANGEBYSCORE', set_name, '-inf', threshold)
             """;
     static final RedisScript<Long> EXPIRE_MEMBERS_SCRIPT = new DefaultRedisScript<>(EXPIRE_MEMBERS_SCRIPT_VALUE, Long.class);
+
+    @Language("LUA")
+    private static final String REMOVE_MEMBER_SCRIPT_VALUE = """
+            local set_name = KEYS[1]   -- The name of the sorted set
+            local member = ARGV[1]  -- The member to remove
+                        
+            -- Remove specified members
+            return redis.call('ZREM', set_name, member)
+            """;
+    static final RedisScript<Long> REMOVE_MEMBER_SCRIPT = new DefaultRedisScript<>(REMOVE_MEMBER_SCRIPT_VALUE, Long.class);
 
     private LuaScripts() {
         throw new UnsupportedOperationException();

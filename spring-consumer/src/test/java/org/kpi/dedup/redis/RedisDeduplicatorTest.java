@@ -96,6 +96,16 @@ class RedisDeduplicatorTest {
         assertDoesNotThrow(() -> redisDeduplicator.set(deduplicationKey));
     }
 
+    @Test
+    void remove() {
+        var deduplicationKey = new DeduplicationKey("key1", String.valueOf(1));
+        redisDeduplicator.set(deduplicationKey);
+        assertFalse(redisDeduplicator.isUnique(deduplicationKey));
+
+        redisDeduplicator.remove(deduplicationKey);
+        assertTrue(redisDeduplicator.isUnique(deduplicationKey));
+    }
+
     @TestConfiguration
     @Import(value = {RedisConfiguration.class})
     static class LocalTestConfiguration {
