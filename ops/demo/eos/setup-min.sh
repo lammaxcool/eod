@@ -57,4 +57,4 @@ $KSQL /ksql/orders_enriched.ksql
 echo "ksql orders_enriched.ksql executed"
 
 $RESTART_KSQL 30 10
-$STOP_KSQL 50
+$STOP_KSQL 120
