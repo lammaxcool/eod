@@ -35,14 +35,32 @@ services:
     container_name: redis
     image: redis:latest
     restart: always
+    command:
+      - '--maxmemory 256mb'
     ports:
       - "6379:6379"
     volumes:
       - ./data:/root/redis
-      - ./conf:/usr/local/etc/redis/redis.conf
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PASSWORD=mypass
       - REDIS_PORT=6379
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  redis-exporter:
+    container_name: redis-exporter
+    image: oliver006/redis_exporter:alpine
+    ports:
+      - "9121:9121"
+    restart: unless-stopped
+    command:
+      - '--redis.addr=redis://redis:6379'
+      - '-include-system-metrics=true'
+    depends_on:
+      - redis
 
   spring-consumer-redis:
     image: spring-consumer:latest

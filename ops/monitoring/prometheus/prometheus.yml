@@ -6,14 +6,14 @@ scrape_configs:
     #scrape_interval: 1s
     static_configs:
       - targets:
-        - broker-1:7071
-        - broker-2:7071
-        - broker-3:7071
+          - broker-1:7071
+          - broker-2:7071
+          - broker-3:7071
         labels:
           cluster_type: "kafka"
           cluster_id: "kafka-core"
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         regex: '(.*):(.*)'
         target_label: instance
         replacement: '$1'
@@ -28,7 +28,7 @@ scrape_configs:
           cluster_type: "schema-registry"
           cluster_id: "schema-registry"
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         regex: '(.*):(.*)'
         target_label: instance
         replacement: '$1'
@@ -36,14 +36,14 @@ scrape_configs:
     #scrape_interval: 1s
     static_configs:
       - targets:
-        - connect-1:7071
-        - connect-2:7071
-        - connect-3:7071
+          - connect-1:7071
+          - connect-2:7071
+          - connect-3:7071
         labels:
           cluster_type: "connect"
           cluster_id: "connect-cluster"
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         regex: '(.*):(.*)'
         target_label: instance
         replacement: '$1'
@@ -57,34 +57,34 @@ scrape_configs:
           cluster_type: "streams"
           cluster_id: "ksql-cluster"
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         regex: '(.*):(.*)'
         target_label: instance
         replacement: '$1'
   - job_name: kafka_exporter
     static_configs:
       - targets:
-        - kafka-exporter:9308
+          - kafka-exporter:9308
   - job_name: druid-exporter
     static_configs:
       - targets:
-        - druid-exporter:7071
+          - druid-exporter:7071
         labels:
           cluster_type: "druid"
           cluster_id: "druid-exporter"
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [ __address__ ]
         regex: '(.*):(.*)'
         target_label: instance
         replacement: '$1'
   - job_name: druid
     static_configs:
       - targets:
-        - druid-coordinator:7071
-        - druid-router:7071
-        - druid-broker:7071
-        - druid-historical:7071
-        - druid-middlemanager:7071
+          - druid-coordinator:7071
+          - druid-router:7071
+          - druid-broker:7071
+          - druid-historical:7071
+          - druid-middlemanager:7071
         labels:
           cluster_type: "druid"
           cluster_id: "druid"
@@ -97,3 +97,19 @@ scrape_configs:
     file_sd_configs:
       - files:
           - /etc/prometheus/targets.json
+
+  - job_name: redis_exporter_targets
+    static_configs:
+      - targets:
+          - redis://redis:6379
+    metrics_path: /scrape
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: redis-exporter:9121
+  - job_name: redis_exporter
+    static_configs:
+      - targets: [ 'redis-exporter:9121' ]

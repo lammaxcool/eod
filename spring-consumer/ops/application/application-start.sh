@@ -18,7 +18,7 @@ if [[ "$eos" == true ]]; then
   sleep "$REPLICA_TIME"
   docker compose up spring-consumer-eos -d --scale spring-consumer-eos=2
 elif [[ "$alo" == true ]]; then
-  docker compose up pgadmin redis spring-consumer-redis -d
+  docker compose up pgadmin redis-exporter spring-consumer-redis -d
   sleep "$REPLICA_TIME"
   docker compose up spring-consumer-redis -d --scale spring-consumer-redis=2
 fi
