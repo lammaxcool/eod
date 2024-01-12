@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.kpi.dedup.DeduplicationKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -28,10 +29,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Objects;
 
 @Testcontainers
-@SpringBootTest
 @DirtiesContext
 @ActiveProfiles(profiles = {"test"})
 @ContextConfiguration(classes = {RedisDeduplicatorTest.LocalTestConfiguration.class})
+@SpringBootTest(properties = {"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration"}, classes = {RedisDeduplicator.class})
 class RedisDeduplicatorTest {
 
     @Container
@@ -108,6 +109,7 @@ class RedisDeduplicatorTest {
 
     @TestConfiguration
     @Import(value = {RedisConfiguration.class})
+    @EnableConfigurationProperties(DeduplicatorRedisApplicationProperties.class)
     static class LocalTestConfiguration {
 
         @Primary

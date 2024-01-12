@@ -13,7 +13,22 @@ public final class LuaScripts {
             local member = ARGV[2]     -- The member to add to the set
                         
             -- Add member to the sorted set wih the timestamp as the score
-            return redis.call('ZADD', set_name, 'NX', timestamp, member)
+            local added = redis.call('ZADD', set_name, 'NX', timestamp, member)
+                        
+            if added > 0 then
+             local latest_timestamp = redis.call('ZREVRANGE', set_name, 0, 0, 'WITHSCORES')[2]
+                if latest_timestamp then
+                    -- Calculate the TTL as the difference between the latest timestamp and the current time
+                    local ttl = tonumber(latest_timestamp) - redis.call('TIME')[1]
+                    if ttl > 0 then
+                        -- Set the TTL for the key
+                        redis.call('EXPIRE', set_name, ttl, 'GT')
+                    end
+                end
+            end
+                        
+            -- Return whether a new member was
+            return added;
             """;
     static final RedisScript<Long> SET_IF_NOT_EXISTS_SCRIPT = new DefaultRedisScript<>(SET_IF_NOT_EXISTS_SCRIPT_VALUE, Long.class);
 

@@ -11,7 +11,7 @@ application:
     partitionCount: 2
     replicaCount: 1
   redis:
-    expire-duration-millis: 100
+    expire-duration-millis: 300
 
 spring:
   data:
@@ -33,4 +33,4 @@ spring:
     username: sa
     password: sa
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-server.xml
+    enabled: false
